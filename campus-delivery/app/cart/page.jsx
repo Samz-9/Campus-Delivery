@@ -10,8 +10,15 @@ export default function CheckoutPage() {
     const [cartItems, setCartItems] = useState([]);
     const [paymentMethod, setPaymentMethod] = useState('UPI');
     const [isProcessing, setIsProcessing] = useState(false);
+    const [deliveryDetails, setDeliveryDetails] = useState({});
 
     // 1. FETCH DATA: Pull from localStorage on mount
+    useEffect(() => {
+        const details = localStorage.getItem('delivery_details');
+        if (details) {
+            setDeliveryDetails(JSON.parse(details));
+        }
+    }, []);
     useEffect(() => {
         const savedCart = localStorage.getItem('campus_cart');
         if (savedCart) {
@@ -36,13 +43,46 @@ export default function CheckoutPage() {
         localStorage.setItem('campus_cart', JSON.stringify(updated));
     };
 
-    const handlePayNow = () => {
-        setIsProcessing(true);
-        // Simulate payment logic
-        setTimeout(() => {
-            localStorage.removeItem('campus_cart'); // Clear cart after success
-            router.push('/receipt');
-        }, 2000);
+    const handlePayNow = async () => {
+    setIsProcessing(true);
+    const phone = localStorage.getItem('phone');
+    console.log('PayNow - Phone:', phone, 'Details:', deliveryDetails);
+    if (!phone || !deliveryDetails.name) {
+        alert('Missing user or delivery details');
+        setIsProcessing(false);
+        return;
+    }
+
+    const orderData = {
+        userId: phone,
+        phone,
+        name: deliveryDetails.name,
+        address: { ...deliveryDetails },
+        cart: cartItems,
+        paymentMethod,
+        subtotal,
+        deliveryFee,
+        total
+    };
+
+    try {
+        const res = await fetch('/api/Create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+        });
+        const data = await res.json();
+        if (data.success) {
+        localStorage.removeItem('campus_cart');
+        localStorage.removeItem('delivery_details');
+        router.push(`/receipt?orderId=${data.orderId}`);
+        } else {
+        alert('Order failed');
+        }
+    } catch (error) {
+        alert('Error creating order');
+    }
+    setIsProcessing(false);
     }; 
 
     return (

@@ -21,7 +21,9 @@ export default function SignInButton() {
         .then(res => res.json())
         .then(data => {
           if (data.success) {
-            window.location.href = "/home"
+            localStorage.setItem('phone', data.phone);
+            console.log('Phone set in localStorage:', localStorage.getItem('phone')); // Store phone for verification checks
+            window.location.href = "/role-selection"
           }
         })
     }

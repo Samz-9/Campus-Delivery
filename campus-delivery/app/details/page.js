@@ -15,13 +15,10 @@ export default function DetailsPage() {
   const [landmark, setLandmark] = useState("")
 
   const handleContinue = () => {
-    // if (!name || !address) return
-
-    // localStorage.setItem(
-    //   "delivery_details",
-    //   JSON.stringify({ name, address, landmark })
-    // )
-
+    if (!name || !address) return
+    console.log('Details:', { name, address, landmark }); // Add this
+    localStorage.setItem("delivery_details", JSON.stringify({ name, address, landmark }));
+    console.log('Details set in localStorage:', localStorage.getItem('delivery_details')); // Add this
     router.push("/cart")
   }
 

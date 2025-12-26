@@ -15,12 +15,15 @@ export default function SignupForm() {
     const [isExiting, setIsExiting] = useState(false);
 
     const handleSubmit = (e) => {
-        e.preventDefault();
-        setIsExiting(true);
-        // Simulate navigation delay for the fade-out effect
-        setTimeout(() => {
-            window.location.href = "/home";
-        }, 600);
+    e.preventDefault();
+    setIsExiting(true);
+    console.log('Signup formData:', formData); // Add this
+    localStorage.setItem('phone', formData.number);
+    localStorage.setItem('role', formData.role || 'customer');
+    console.log('Phone and role set:', localStorage.getItem('phone'), localStorage.getItem('role')); // Add this
+    setTimeout(() => {
+        window.location.href = "/home";
+    }, 600);
     };
 
     const updateField = (field, value) => {

@@ -1,3 +1,5 @@
+import { connectDB } from '../../../lib/db'
+import User from '../../../models/user'
 import { NextResponse } from "next/server"
 
 export async function POST(req) {
@@ -16,9 +18,9 @@ export async function POST(req) {
     // ✅ VERIFIED phone number
     console.log("Verified Phone:", phone)
 
-    // TODO:
-    // 1. Save user in DB
-    // 2. Create session / JWT
+    // Save user if not exists
+    await connectDB()
+    await User.findByIdAndUpdate(phone, { phone }, { upsert: true })
 
     return NextResponse.json({
       success: true,
