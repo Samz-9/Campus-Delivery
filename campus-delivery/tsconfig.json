@@ -12,8 +12,8 @@
     "noEmit": true,
     "incremental": true,
     "module": "esnext",
-    "esModuleInterop": true, 
-    "moduleResolution": "bundler", 
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -28,8 +28,8 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx",
-    "**/*.js",    // Added for JS support
-    "**/*.jsx"   // Added for JS support
+    "**/*.js", // Added for JS support
+    "**/*.jsx" // Added for JS support
   ],
   "exclude": ["node_modules"]
 }
