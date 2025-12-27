@@ -11,26 +11,30 @@ export default function CheckoutPage() {
     const [paymentMethod, setPaymentMethod] = useState('UPI');
     const [isProcessing, setIsProcessing] = useState(false);
     const [deliveryDetails, setDeliveryDetails] = useState({});
+    const [selectedCollege, setSelectedCollege] = useState('');
+    const [selectedVenue, setSelectedVenue] = useState('');
 
-    // 1. FETCH DATA: Pull from localStorage on mount
+    // FIX: Move all localStorage reading into a single useEffect
     useEffect(() => {
+        // 1. Get Delivery Details
         const details = localStorage.getItem('delivery_details');
-        if (details) {
-            setDeliveryDetails(JSON.parse(details));
-        }
-    }, []);
-    useEffect(() => {
+        if (details) setDeliveryDetails(JSON.parse(details));
+
+        // 2. Get College and Venue
+        const college = localStorage.getItem('selectedCollege');
+        const venue = localStorage.getItem('selectedVenue');
+        if (college) setSelectedCollege(college);
+        if (venue) setSelectedVenue(venue);
+
+        // 3. Get Cart Items
         const savedCart = localStorage.getItem('campus_cart');
         if (savedCart) {
             setCartItems(JSON.parse(savedCart));
         } else {
-            // Redirect back if cart is empty
-            router.push('/');
+            router.push('/'); // Redirect if empty
         }
     }, [router]);
-
-    // 2. LOGIC: Recalculate totals based on current items
-    const deliveryFee = 20;
+    const deliveryFee = 10;
     const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.qty), 0);
     const total = subtotal + deliveryFee;
 
@@ -44,46 +48,48 @@ export default function CheckoutPage() {
     };
 
     const handlePayNow = async () => {
-    setIsProcessing(true);
-    const phone = localStorage.getItem('phone');
-    console.log('PayNow - Phone:', phone, 'Details:', deliveryDetails);
-    if (!phone || !deliveryDetails.name) {
-        alert('Missing user or delivery details');
-        setIsProcessing(false);
-        return;
-    }
-
-    const orderData = {
-        userId: phone,
-        phone,
-        name: deliveryDetails.name,
-        address: { ...deliveryDetails },
-        cart: cartItems,
-        paymentMethod,
-        subtotal,
-        deliveryFee,
-        total
-    };
-
-    try {
-        const res = await fetch('/api/Create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData)
-        });
-        const data = await res.json();
-        if (data.success) {
-        localStorage.removeItem('campus_cart');
-        localStorage.removeItem('delivery_details');
-        router.push(`/receipt?orderId=${data.orderId}`);
-        } else {
-        alert('Order failed');
+        setIsProcessing(true);
+        const phone = localStorage.getItem('phone');
+        console.log('PayNow - Phone:', phone, 'Details:', deliveryDetails);
+        if (!phone || !deliveryDetails.name) {
+            alert('Missing user or delivery details');
+            setIsProcessing(false);
+            return;
         }
-    } catch (error) {
-        alert('Error creating order');
-    }
-    setIsProcessing(false);
-    }; 
+
+        const orderData = {
+            userId: phone,
+            phone,
+            name: deliveryDetails.name,
+            address: { ...deliveryDetails },
+            cart: cartItems,
+            paymentMethod,
+            subtotal,
+            deliveryFee,
+            total,
+            college: selectedCollege,
+            venue: selectedVenue,
+        };
+
+        try {
+            const res = await fetch('/api/Create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderData)
+            });
+            const data = await res.json();
+            if (data.success) {
+                localStorage.removeItem('campus_cart');
+                localStorage.removeItem('delivery_details');
+                router.push(`/receipt?orderId=${data.orderId}`);
+            } else {
+                alert('Order failed');
+            }
+        } catch (error) {
+            alert('Error creating order');
+        }
+        setIsProcessing(false);
+    };
 
     return (
         <div className="min-h-screen bg-[#FFD54F] font-sans">
@@ -167,12 +173,13 @@ export default function CheckoutPage() {
                             ].map((method) => (
                                 <label
                                     key={method.id}
-                                    className={`flex items-center justify-between p-4 rounded-2xl cursor-pointer border-2 transition-all ${paymentMethod === method.id
+                                    disabled={method.id === "COD"}
+                                    className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all ${method.id === "COD" ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer hover:grayscale-0 hover:opacity-100'} ${paymentMethod === method.id
                                         ? 'border-red-500 bg-red-50 ring-2 ring-red-100'
-                                        : 'border-gray-50 bg-gray-50 grayscale opacity-70 hover:grayscale-0 hover:opacity-100'
-                                        }`}
+                                        : 'border-gray-50 bg-gray-200 grayscale opacity-70 '}  
+                                        `}
                                 >
-                                    <div className="flex items-center gap-3">
+                                    <div className={`flex items-center gap-3`}>
                                         <div className={paymentMethod === method.id ? 'text-red-500' : 'text-gray-400'}>
                                             {method.icon}
                                         </div>

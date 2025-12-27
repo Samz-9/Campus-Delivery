@@ -77,7 +77,7 @@ export default function VenueSelection() {
                     >
                         <span className="bg-red-600 px-4 py-1 rounded-full text-xs font-black tracking-widest uppercase">Premium Campus</span>
                         <h1 className="text-7xl font-black italic mt-4 tracking-tighter">{collegeName}</h1>
-                        <p className="text-xl font-medium text-gray-300 mt-2">Pick a spot, we'll find you.</p>
+                        <p className="text-xl font-medium text-gray-300 mt-2">Pick a spot, we&apos;ll find you.</p>
                     </motion.div>
                 </div>
 
@@ -152,7 +152,7 @@ export default function VenueSelection() {
                         <Info size={18} />
                     </div>
                     <p className="text-xs font-bold text-yellow-800 italic">
-                        "Meet delivery boy at the desired location."
+                        &quot;Meet delivery boy at the desired location.&quot;
                     </p>
                 </div>
             </motion.div>

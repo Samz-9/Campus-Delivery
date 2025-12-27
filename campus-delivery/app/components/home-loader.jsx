@@ -3,24 +3,23 @@ import { motion } from "framer-motion"
 
 export default function HomeLoader() {
     return (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-yellow-300 to-yellow-400 overflow-hidden">
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-yellow-300 to-yellow-400 overflow-hidden"
+        style={{ backgroundImage: "url('/images/bg-phone.png')" }}>
 
             {/* Title */}
             <motion.h1
                 initial={{ opacity: 0, y: -60 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
-                className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-8"
+                className="text-5xl md:text-6xl font-extrabold text-center text-gray-900 mb-8"
             >
                 Campus Delivery
             </motion.h1>
 
-            {/* Running Boy */}
-            <motion.div
-                className="relative"
-            >
+
+            <motion.div className="relative">
                 <motion.div
-                    className="absolute w-64 h-64 rounded-full border-4 border-yellow-600 border-t-transparent"
+                    className="absolute w-56 h-56 md:w-64 md:h-64 rounded-full border-4 border-yellow-600 border-t-transparent"
                     animate={{ rotate: 360 }}
                     transition={{
                         repeat: Infinity,

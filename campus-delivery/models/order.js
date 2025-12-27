@@ -10,7 +10,10 @@ const OrderSchema = new mongoose.Schema({
   subtotal: Number,
   deliveryFee: Number,
   total: Number,
-  status: { type: String, default: "PLACED" }
+  status: { type: String, default: "PLACED" },
+  deliveryPartner: String,
+  college: String,
+  venue: String,
 }, { timestamps: true })
 
 export default mongoose.models.Order || mongoose.model("Order", OrderSchema)

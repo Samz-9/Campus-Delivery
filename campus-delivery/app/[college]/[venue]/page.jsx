@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from 'react';
-import itemdata from '@/Public/items.json';
+import itemdata from '@/Public/items.json'
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ShoppingBag, Plus, Minus, Star } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
@@ -54,6 +54,8 @@ export default function VenueMenu() {
     if (totalItems > 0) {
       localStorage.setItem('campus_cart', JSON.stringify(cartDetails));
       localStorage.setItem('campus_total', totalPrice.toString());
+      localStorage.setItem('selectedCollege', collegeParam); // Add this
+      localStorage.setItem('selectedVenue', venueParam); // Add this
       router.push('/details');
     }
   };
@@ -72,9 +74,9 @@ export default function VenueMenu() {
   const filteredItems = MENU_DATA.items.filter(item => item.category === activeCat);
 
   return (
-    <div className="min-h-screen bg-[#FFD54F] font-sans">
+    <div className="w-full min-h-screen bg-[#FFD54F] font-sans">
       {/* HEADER */}
-      <header className="p-4 flex items-center justify-between sticky top-0 bg-[#FFD54F] z-30">
+      <header className="py-4 px-6 flex items-center justify-between sticky top-0 bg-[#FFD54F] z-30">
         <button onClick={() => router.back()} className="bg-white p-3 text-gray-500 rounded-2xl shadow-lg">
           <ChevronLeft size={24} />
         </button>
@@ -85,7 +87,7 @@ export default function VenueMenu() {
         <div className="w-12" />
       </header>
 
-      <div className="bg-white m-2 md:mx-6 rounded-t-[3rem] min-h-[calc(100vh-100px)] p-6 pb-32">
+      <div className="bg-white m-2 md:mx-6 rounded-t-[3rem] min-h-[calc(100vh-100px)] p-4 md:p-6 pb-32">
         {/* CATEGORY SELECTOR */}
         <div className="flex gap-3 pl-3 overflow-x-auto pb-6 no-scrollbar">
           {MENU_DATA.categories.map(cat => (
@@ -111,9 +113,9 @@ export default function VenueMenu() {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="flex items-center gap-4 bg-gray-50 p-4 rounded-[2rem] border border-transparent hover:border-yellow-200 transition-all"
+                className="flex items-center gap-4 bg-gray-50 p-2 md:p-4 rounded-[2rem] border border-transparent hover:border-yellow-200 transition-all"
               >
-                <img src={item.img} alt={item.name} className="w-24 h-24 rounded-2xl object-cover shadow-md" />
+                <img src={item.img} alt={item.name} className="w-16 h-16 md:w-24 md:h-24 rounded-2xl object-cover shadow-md" />
                 <div className="flex-1">
                   <div className="flex items-center gap-1 text-yellow-500 mb-1">
                     <Star size={12} fill="currentColor" />
@@ -124,7 +126,7 @@ export default function VenueMenu() {
                 </div>
 
                 {/* QUANTITY CONTROLS */}
-                <div className="flex flex-col items-center gap-2 bg-white p-1 rounded-2xl shadow-sm border border-gray-100">
+                <div className="flex flex-row items-center gap-2 md:flex-col bg-white p-1 rounded-2xl shadow-sm border border-gray-100">
                   <motion.button 
                     whileTap={{ scale: 0.8 }}
                     onClick={() => updateCart(item.id, 1)}
